@@ -2,7 +2,7 @@ name: Process pull request
 
 on:
   workflow_run:
-    workflows: [save_pr_number]
+    workflows: ["Save pull request number"]
     types: [completed]
 
 jobs:
