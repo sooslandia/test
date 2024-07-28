@@ -35,7 +35,7 @@ def convert_resx_files(project_path):
     for file in english_files:
         lng |= parse_resx(file)
     lng = json.dumps(lng, indent=2, ensure_ascii=False, sort_keys=True)
-    with (project_path / "english.lng").open("w", encoding="utf-8") as f:
+    with (project_path / "english.lng").open("w", encoding="utf-8", newline="") as f:
         f.write(lng)
 
 
@@ -66,7 +66,9 @@ def generate_pot_file(project_path):
     source = "\n".join(source)
     source += "\n"
     pot = generate_pot_file_from_source(source, project_path.name)
-    with (project_path / (project_path.name + ".pot")).open("w", encoding="utf-8") as f:
+    with (project_path / (project_path.name + ".pot")).open(
+        "w", encoding="utf-8", newline=""
+    ) as f:
         f.write(pot)
 
 

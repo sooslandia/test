@@ -99,7 +99,7 @@ def process_po_file(*, project_path, english_lng, file, language_code, language_
             missing_strings,
         )
     with (project_path / (language_name.lower() + ".lng")).open(
-        "w", encoding="utf-8"
+        "w", encoding="utf-8", newline=""
     ) as f:
         json.dump(lng, f, ensure_ascii=False, indent=2, sort_keys=True)
 
@@ -236,7 +236,9 @@ def main():
                 "Validation and conversion completed without errors, let's wait for the review team.\n"
                 "Thanks for your contribution!"
             ]
-        with (REPOSITORY_DIR / "result.txt").open("w", encoding="utf-8") as f:
+        with (REPOSITORY_DIR / "result.txt").open(
+            "w", encoding="utf-8", newline=""
+        ) as f:
             f.write("\n".join(messages))
 
 
