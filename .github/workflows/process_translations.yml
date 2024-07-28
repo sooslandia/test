@@ -60,4 +60,4 @@ jobs:
           git config user.name 'Sooslandia github action'
           git add .
           git commit -m "Update translations"
-          git push
+          git push || :
