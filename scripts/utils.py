@@ -1,5 +1,6 @@
 import shlex
 import subprocess
+from pathlib import Path
 
 from constants import (
     BRACES_PLACEHOLDER_REGEX,
@@ -30,6 +31,7 @@ def file_updated(file_path):
     quoted_file_path = shlex.quote(str(file_path))
     return_code = subprocess.call(
         ["bash", "-c", f"[[ $(git diff HEAD~1  -- {quoted_file_path}) ]]"],
+        cwd=str(Path(file_path).parent),
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
