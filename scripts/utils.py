@@ -27,7 +27,6 @@ def convert_percents_to_braces(string):
 
 
 def file_updated(file_path):
-    return True
     quoted_file_path = shlex.quote(str(file_path))
     return_code = subprocess.call(
         ["bash", "-c", f"[[ $(git diff HEAD~1  -- {quoted_file_path}) ]]"],
