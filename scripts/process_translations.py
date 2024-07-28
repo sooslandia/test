@@ -230,8 +230,14 @@ def main():
         project_dirs = [i for i in f.read().split("\n") if i]
     for project_dir in project_dirs:
         process_project(PROJECTS_DIR / project_dir)
-    for message in message_manager.get_messages():
-        print(message)
+        messages = message_manager.get_messages()
+        if not messages:
+            messages = [
+                "Validation and conversion completed without errors, let's wait for the review team.\n"
+                "Thanks for your contribution!"
+            ]
+        with (REPOSITORY_DIR / "result.txt").open("w", encoding="utf-8") as f:
+            f.write("\n".join(messages))
 
 
 if __name__ == "__main__":
