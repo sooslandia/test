@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Agsharp\n"
 "Report-Msgid-Bugs-To: contact@sooslandia.ru\n"
-"POT-Creation-Date: 2024-07-28 19:17+0000\n"
+"POT-Creation-Date: 2024-07-28 19:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -122,7 +122,7 @@ msgid "level {0}"
 msgstr ""
 
 #. Translators: AudioForms_TreeControlName
-msgid "tree42"
+msgid "tree"
 msgstr ""
 
 #. Translators: Language
