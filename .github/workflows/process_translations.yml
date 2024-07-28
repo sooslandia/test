@@ -22,6 +22,10 @@ jobs:
           repository: ${{ github.event.pull_request.head.repository.full_name }}
           ref: ${{ github.event.pull_request.head.sha }}
           path: ./pr
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install gettext
       - name: Process master changes
         if: ${{ github.event_name == 'push' }}
         env:
