@@ -16,7 +16,7 @@ jobs:
       - name: Checkout base
         uses: actions/checkout@v4
         with:
-          fetch-depth: '2'
+          fetch-depth: '100'
       - name: Upload working directory
         uses: actions/upload-artifact@v4
         with:
