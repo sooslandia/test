@@ -41,7 +41,7 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         env:
           PROJECTS_DIR: '.'
-          BEFORE_PUSH_COMMIT_SHA: ${{ github.event.push.before }}
+          BEFORE_PUSH_COMMIT_SHA: ${{ github.event.before }}
         run: python3 scripts/process_master_changes.py
       - name: Process translations
         env:
