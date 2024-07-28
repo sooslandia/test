@@ -9,7 +9,7 @@ jobs:
   process_translations:
     permissions:
       actions: read
-      contents: read
+      contents: write
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
