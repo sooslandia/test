@@ -133,7 +133,12 @@ def process_lng_files(project_path):
 
 def process_lng_file(*, project_path, english_lng, file, language_code, language_name):
     with file.open("r", encoding="utf-8") as f:
-        lng = json.load(f)
+        try:
+            lng = json.load(f)
+        except json.JSONDecodeError as e:
+            message_manager.add_message(
+                f"Failed to load {project_path.name}/{file.name}: {str(e)}"
+            )
     errors = []
     missing = object()
     for key, required_value in [
