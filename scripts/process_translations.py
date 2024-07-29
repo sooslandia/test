@@ -139,6 +139,7 @@ def process_lng_file(*, project_path, english_lng, file, language_code, language
             message_manager.add_message(
                 f"Failed to load {project_path.name}/{file.name}: {str(e)}"
             )
+            return
     errors = []
     missing = object()
     for key, required_value in [
