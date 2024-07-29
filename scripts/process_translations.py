@@ -206,7 +206,12 @@ def generate_resx_files(project_path):
         if lng_file.name == "english.lng":
             continue
         with lng_file.open("r", encoding="utf-8") as f:
-            lng = json.load(f)
+            try:
+                lng = json.load(f)
+            except json.JSONDecodeError:
+                # Should be handled and added to message_manager by lng validation function,
+                # Let's not add this error again.
+                continue
         errors = []
         for resx_file in resx_files:
             errors.extend(generate_resx_from_lng(lng, resx_file))
