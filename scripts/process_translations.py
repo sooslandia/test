@@ -157,6 +157,11 @@ def process_lng_file(*, project_path, english_lng, file, language_code, language
             identifier + " - " + i
             for i in validate_placeholders(english_lng[identifier], lng[identifier])
         )
+    if errors:
+        message_manager.add_list_message(
+            f"Errors in {project_path.name}/{file.name} lng translation",
+            errors,
+        )
     if missing_strings:
         message_manager.add_list_message(
             f"Missing strings in {project_path.name}/{file.name} lng translation",
