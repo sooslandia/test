@@ -17,11 +17,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: '100'
-      - name: Upload working directory
-        uses: actions/upload-artifact@v4
-        with:
-          name: Working-directory
-          path: .
       - name: Checkout pr
         if: ${{ github.event_name == 'pull_request_target' }}
         uses: actions/checkout@v4
