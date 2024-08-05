@@ -61,7 +61,7 @@ def generate_pot_file(project_path):
     lng.pop("Culture")
     source = []
     for identifier, string in lng.items():
-        source.append(f"# Translators: {identifier}")
+        source.append(f"# {identifier}")
         source.append(get_source_line_for_pot(convert_percents_to_braces(string)))
     source = "\n".join(source)
     source += "\n"
@@ -92,6 +92,7 @@ def generate_pot_file_from_source(source, package_name):
             "--language=Python",
             "-c",
             "--no-location",
+            "--add-comments",
             f"--msgid-bugs-address={EMAIL_ADDRESS}",
             f"--package-name={package_name}",
             "-",
