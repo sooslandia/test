@@ -33,6 +33,7 @@ def process_project(project_path):
 
 def convert_resx_files(project_path):
     logger.info("Processing resx files")
+    english_lng_file = project_path / "english.lng"
     english_files = []
     has_changes = False
     for file in project_path.glob("*.resx"):
@@ -41,14 +42,14 @@ def convert_resx_files(project_path):
             if not has_changes and file_updated(file):
                 has_changes = True
     logger.info(f"Found {len(english_files)} english resx files")
-    if not has_changes:
+    if not has_changes and english_lng_file.exists():
         logger.info("No changed english resx files found")
         return
     lng = {"Culture": "en", "Language": "english"}
     for file in english_files:
         lng |= parse_resx(file)
     lng = json.dumps(lng, indent=2, ensure_ascii=False, sort_keys=True)
-    with (project_path / "english.lng").open("w", encoding="utf-8", newline="") as f:
+    with english_lng_file.open("w", encoding="utf-8", newline="") as f:
         f.write(lng)
     logger.info("Resx files processed")
 
@@ -71,8 +72,9 @@ def parse_resx(file):
 
 def generate_pot_file(project_path):
     logger.info("Generating pot file from english lng file")
+    pot_file = project_path / (project_path.name + ".pot")
     english_file = project_path / "english.lng"
-    if not file_updated(english_file):
+    if not file_updated(english_file) and pot_file.exists():
         logger.info("File is not changed")
         return
     with english_file.open("r") as f:
@@ -85,9 +87,7 @@ def generate_pot_file(project_path):
     source = "\n".join(source)
     source += "\n"
     pot = generate_pot_file_from_source(source, project_path.name)
-    with (project_path / (project_path.name + ".pot")).open(
-        "w", encoding="utf-8", newline=""
-    ) as f:
+    with pot_file.open("w", encoding="utf-8", newline="") as f:
         f.write(pot)
     logger.info("Pot file generated")
 
