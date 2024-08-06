@@ -153,6 +153,10 @@ def process_en_docs(en_docs_path):
 def process_docs_md_file(md_file):
     logger.info(f"Processing docs md file {md_file}")
     package_name = md_file.relative_to(REPOSITORY_DIR).parts[0]
+    pot_file = md_file.with_suffix(".pot")
+    if not file_updated(md_file) and pot_file.exists():
+        logger.info("Md file is not changed")
+        return
     process = subprocess.Popen(
         [
             "md2po",
@@ -191,7 +195,6 @@ def process_docs_md_file(md_file):
         pot += process.stdout.read()
     if process.returncode != 0:
         raise RuntimeError(f"xgettext failed with code {process.returncode}")
-    pot_file = md_file.with_suffix(".pot")
     with pot_file.open("wb") as f:
         f.write(pot)
     logger.info("Md file processed")
