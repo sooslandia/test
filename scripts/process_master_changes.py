@@ -19,6 +19,7 @@ PROJECTS_DIR = Path(os.environ["PROJECTS_DIR"])
 def process_project(project_path):
     convert_resx_files(project_path)
     generate_pot_file(project_path)
+    process_docs(project_path)
 
 
 def convert_resx_files(project_path):
@@ -90,7 +91,6 @@ def generate_pot_file_from_source(source, package_name):
             "-o",
             "-",
             "--language=Python",
-            "-c",
             "--no-location",
             "--add-comments",
             f"--msgid-bugs-address={EMAIL_ADDRESS}",
@@ -109,6 +109,64 @@ def generate_pot_file_from_source(source, package_name):
     if process.returncode != 0:
         raise RuntimeError(f"xgettext failed with code {process.returncode}")
     return pot.decode()
+
+
+def process_docs(project_path):
+    docs_path = project_path / "docs"
+    if not docs_path.is_dir():
+        return
+    en_docs_path = docs_path / "en"
+    process_en_docs(en_docs_path)
+
+
+def process_en_docs(en_docs_path):
+    for md_file in en_docs_path.glob("*.md"):
+        process_docs_md_file(md_file)
+
+
+def process_docs_md_file(md_file):
+    package_name = md_file.relative_to(REPOSITORY_DIR).parts[0]
+    process = subprocess.Popen(
+        [
+            "md2po",
+            "-d",
+            "Content-Type: text/plain; charset=utf-8",
+            md_file,
+        ],
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+    )
+    po = b""
+    while process.poll() is None:
+        po += process.stdout.read()
+    if process.returncode != 0:
+        raise RuntimeError(f"md2po failed with code {process.returncode}")
+    process = subprocess.Popen(
+        [
+            "xgettext",
+            "-o",
+            "-",
+            "--language=po",
+            "--no-location",
+            "--add-comments",
+            f"--msgid-bugs-address={EMAIL_ADDRESS}",
+            f"--package-name={package_name}",
+            "-",
+        ],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+    )
+    process.stdin.write(po)
+    process.stdin.flush()
+    process.stdin.close()  # EOF
+    pot = b""
+    while process.poll() is None:
+        pot += process.stdout.read()
+    if process.returncode != 0:
+        raise RuntimeError(f"xgettext failed with code {process.returncode}")
+    pot_file = md_file.with_suffix(".pot")
+    with pot_file.open("wb") as f:
+        f.write(pot)
 
 
 def main():
