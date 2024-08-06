@@ -32,6 +32,9 @@ jobs:
         run: |
           sudo apt update
           sudo apt install gettext
+          tar xzf mdpo-files/wheels.tar.gz
+          python3 -m pip install wheels/*.whl
+          rm -rf wheels
       - name: Process master changes
         if: ${{ github.event_name == 'push' }}
         env:
