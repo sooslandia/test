@@ -178,7 +178,6 @@ def process_docs_md_file(md_file):
             "-o",
             "-",
             "--language=po",
-            "--no-location",
             "--add-comments",
             f"--msgid-bugs-address={EMAIL_ADDRESS}",
             f"--package-name={package_name}",
