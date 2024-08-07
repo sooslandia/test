@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import subprocess
 from gettext import GNUTranslations
@@ -19,11 +20,19 @@ from utils import (
 REPOSITORY_DIR = Path(".")
 PROJECTS_DIR = Path(os.environ["PROJECTS_DIR"])
 
+logger = logging.getLogger("process_master_changes")
+logger.setLevel(logging.DEBUG)
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)
+logger.addHandler(console_handler)
+
 
 def process_project(project_path):
+    logger.info(f"Processing project {project_path}")
     process_po_files(project_path)
     process_lng_files(project_path)
     generate_resx_files(project_path)
+    logger.info("Project processed")
 
 
 def get_english_lng(project_path):
@@ -37,6 +46,7 @@ def get_english_lng(project_path):
 
 
 def process_po_files(project_path):
+    logger.info("Processing po files")
     english_lng = get_english_lng(project_path)
     valid_po_files = []
     errors = []
@@ -53,14 +63,16 @@ def process_po_files(project_path):
         valid_po_files.append((file, language_code, language_name))
     if errors:
         message_manager.add_list_message("Invalid PO files found", errors)
+    logger.info(f"Found {len(valid_po_files)} valid po files")
     for file, language_code, language_name in valid_po_files:
-        process_po_file(
+        convert_po_to_lng(
             project_path=project_path,
             english_lng=english_lng,
             file=file,
             language_code=language_code,
             language_name=language_name,
         )
+    logger.info("Po files processed")
 
 
 def convert_po_to_mo(file):
@@ -77,9 +89,11 @@ def convert_po_to_mo(file):
     return mo
 
 
-def process_po_file(*, project_path, english_lng, file, language_code, language_name):
-    mo_file = BytesIO(convert_po_to_mo(file))
-    po_translation = GNUTranslations(mo_file)
+def convert_po_to_lng(*, project_path, english_lng, file, language_code, language_name):
+    logger.info(f"Converting po file {file} to lng")
+    lng_file = project_path / (language_name.lower() + ".lng")
+    mo = BytesIO(convert_po_to_mo(file))
+    po_translation = GNUTranslations(mo)
     missing_strings = []
     lng = {"Culture": language_code, "Language": language_name.lower()}
     for identifier, string in english_lng.items():
@@ -90,21 +104,18 @@ def process_po_file(*, project_path, english_lng, file, language_code, language_
             missing_strings.append(f"{identifier} - {string[:200]}")
             continue
         lng[identifier] = convert_braces_to_percents(translated_string)
-    if (total_missing := len(missing_strings)) > 50:
-        del missing_strings[50:]
-        missing_strings.append(f"{total_missing} more...")
     if missing_strings:
         message_manager.add_list_message(
             f"Missing strings in {project_path.name}/{file.name} PO translation",
             missing_strings,
         )
-    with (project_path / (language_name.lower() + ".lng")).open(
-        "w", encoding="utf-8", newline=""
-    ) as f:
+    with lng_file.open("w", encoding="utf-8", newline="") as f:
         json.dump(lng, f, ensure_ascii=False, indent=2, sort_keys=True)
+    logger.info(f"Po file converted to lng file {lng_file}')")
 
 
 def process_lng_files(project_path):
+    logger.info("Processing lng files")
     english_lng = get_english_lng(project_path)
     valid_lng_files = []
     errors = []
@@ -129,9 +140,11 @@ def process_lng_files(project_path):
             language_code=language_code,
             language_name=language_name,
         )
+    logger.info("Lng files processed")
 
 
 def process_lng_file(*, project_path, english_lng, file, language_code, language_name):
+    logger.info(f"Processing lng file {file}")
     with file.open("r", encoding="utf-8") as f:
         try:
             lng = json.load(f)
@@ -178,6 +191,7 @@ def process_lng_file(*, project_path, english_lng, file, language_code, language
             f"Placeholder errors in {project_path.name}/{file.name} lng translation",
             placeholder_errors,
         )
+    logger.info("Lng file processed")
 
 
 def validate_placeholders(original_string, translated_string):
@@ -198,6 +212,7 @@ def validate_placeholders(original_string, translated_string):
 
 
 def generate_resx_files(project_path):
+    logger.info("Generating resx files")
     resx_files = []
     for file in project_path.glob("*.resx"):
         if parse_resx_filename(file.name)[1] is None:
@@ -220,9 +235,11 @@ def generate_resx_files(project_path):
                 f"Errors when generating resx from {project_path.name}/{lng_file.name}",
                 errors,
             )
+    logger.info("Resx files generated")
 
 
 def generate_resx_from_lng(lng, resx_file):
+    logger.info(f"Generating resx file {resx_file} from lng file")
     namespace, _ = parse_resx_filename(resx_file.name)
     with resx_file.open("r", encoding="utf-8") as f:
         root = ElementTree.fromstring(f.read())
@@ -237,6 +254,7 @@ def generate_resx_from_lng(lng, resx_file):
         value.text = convert_percents_to_braces(lng[identifier])
     with resx_file.with_name(f'{namespace}.{lng['Culture']}.resx').open("wb") as f:
         f.write(ElementTree.tostring(root, encoding="utf-8"))
+    logger.info("Resx file generated")
     return errors
 
 
