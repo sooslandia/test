@@ -133,14 +133,14 @@ def generate_pot_file_from_source(source, package_name):
 
 
 def process_docs(project_path):
-    logger.info("Processing project docs")
+    logger.info("Processing docs")
     docs_path = project_path / "docs"
     if not docs_path.is_dir():
         logger.info("No docs in project")
         return
     en_docs_path = docs_path / "en"
     process_en_docs(en_docs_path)
-    logger.info("Project docs processed")
+    logger.info("Docs processed")
 
 
 def process_en_docs(en_docs_path):
