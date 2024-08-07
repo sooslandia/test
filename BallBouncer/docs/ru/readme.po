@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: BallBouncer\n"
 "Report-Msgid-Bugs-To: contact@sooslandia.ru\n"
 "POT-Creation-Date: 2024-08-06 17:48+0000\n"
-"PO-Revision-Date: 2024-08-07 19:54+0700\n"
+"PO-Revision-Date: 2024-08-07 21:38+0700\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -34,15 +34,15 @@ msgstr ""
 
 #: BallBouncer/docs/en/readme.md:block 3 (header)
 msgid "System requirements"
-msgstr ""
+msgstr "Системные требования"
 
 #: BallBouncer/docs/en/readme.md:block 4 (paragraph)
 msgid "64 bit windows 10 or later."
-msgstr ""
+msgstr "64 зарядная Шиндоус 69."
 
 #: BallBouncer/docs/en/readme.md:block 5 (paragraph)
 msgid "64 bit ubuntu 22 or later."
-msgstr ""
+msgstr "64 bit ubuntu 22 or later."
 
 #: BallBouncer/docs/en/readme.md:block 6 (header)
 msgid "First steps"
@@ -263,23 +263,23 @@ msgstr ""
 
 #: BallBouncer/docs/en/readme.md:block 29 (header)
 msgid "control keys"
-msgstr ""
+msgstr "клавиши управления"
 
 #: BallBouncer/docs/en/readme.md:block 30 (table)
 msgid "Action"
-msgstr ""
+msgstr "Действия"
 
 #: BallBouncer/docs/en/readme.md:block 30 (table)
 msgid "Key/keys"
-msgstr ""
+msgstr "Клавиша / клавиши"
 
 #: BallBouncer/docs/en/readme.md:block 30 (table)
 msgid "Character movement right/left"
-msgstr ""
+msgstr "Движение персонажа вправо/влево"
 
 #: BallBouncer/docs/en/readme.md:block 30 (table)
 msgid "Right/Left arrows or d/a keys"
-msgstr ""
+msgstr "Стрелки вправо/влево или клавиши d/a"
 
 #: BallBouncer/docs/en/readme.md:block 30 (table)
 msgid "Play sound at character's position"
