@@ -239,10 +239,11 @@ def generate_resx_files(project_path):
     logger.info("Resx files generated")
 
 
-def generate_resx_from_lng(lng, resx_file):
-    logger.info(f"Generating resx file {resx_file} from lng file")
-    namespace, _ = parse_resx_filename(resx_file.name)
-    with resx_file.open("r", encoding="utf-8") as f:
+def generate_resx_from_lng(lng, source_resx_file):
+    namespace, _ = parse_resx_filename(source_resx_file.name)
+    target_resx_file = source_resx_file.with_name(f'{namespace}.{lng['Culture']}.resx')
+    logger.info(f"Generating resx file {target_resx_file} from lng file")
+    with source_resx_file.open("r", encoding="utf-8") as f:
         root = ElementTree.fromstring(f.read())
     errors = []
     for data in root.iterfind("data"):
@@ -253,7 +254,7 @@ def generate_resx_from_lng(lng, resx_file):
             errors.append(f"Key {identifier} not found")
             continue
         value.text = convert_percents_to_braces(lng[identifier])
-    with resx_file.with_name(f'{namespace}.{lng['Culture']}.resx').open("wb") as f:
+    with target_resx_file.open("wb") as f:
         f.write(ElementTree.tostring(root, encoding="utf-8"))
     logger.info("Resx file generated")
     return errors
