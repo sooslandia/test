@@ -296,7 +296,7 @@ def process_language_docs(docs_dir):
 
 
 def convert_docs_po_to_md_file(po_file):
-    logger.info(f"Converting docs md file {po_file} to md file")
+    logger.info(f"Converting docs po file {po_file} to md file")
     source_md_file = po_file.parent.parent / "en" / po_file.with_suffix(".md").name
     if not source_md_file.is_file():
         return [
@@ -320,6 +320,7 @@ def convert_docs_po_to_md_file(po_file):
     if process.returncode != 0:
         raise RuntimeError(f"po2md failed with code {process.returncode}")
     logger.info("Po file converted to md")
+    return []
 
 
 def main():
