@@ -7,7 +7,7 @@ from io import BytesIO
 from pathlib import Path
 from xml.etree import ElementTree
 
-from constants import LNG_FILE_REGEX, PO_FILE_REGEX
+from constants import DOCS_DIR_REGEX, LNG_FILE_REGEX, PO_FILE_REGEX
 from language_manager import language_manager
 from message_manager import message_manager
 from utils import (
@@ -32,6 +32,7 @@ def process_project(project_path):
     process_po_files(project_path)
     process_lng_files(project_path)
     generate_resx_files(project_path)
+    process_docs(project_path)
     logger.info("Project processed")
 
 
@@ -256,6 +257,68 @@ def generate_resx_from_lng(lng, resx_file):
         f.write(ElementTree.tostring(root, encoding="utf-8"))
     logger.info("Resx file generated")
     return errors
+
+
+def process_docs(project_path):
+    logger.info("Processing docs")
+    docs_path = project_path / "docs"
+    if not docs_path.exists():
+        logger.info("No docs in project")
+    valid_docs_dirs = []
+    errors = []
+    for docs_dir in docs_path.glob("*"):
+        if docs_dir.name == "en":
+            continue
+        if not docs_dir.is_dir():
+            errors.append(f"Object must be a directory: {docs_dir}")
+        elif not DOCS_DIR_REGEX.match(docs_dir.name):
+            errors.append(f"Docs dir name is invalid: {docs_dir}")
+        else:
+            valid_docs_dirs.append(docs_dir)
+    if errors:
+        message_manager.add_list_message(
+            f"Invalid docs found in project {project_path.name}", errors
+        )
+    for docs_dir in valid_docs_dirs:
+        process_language_docs(docs_dir)
+    logger.info("Docs processed")
+
+
+def process_language_docs(docs_dir):
+    logger.info(f"Processing language docs {docs_dir}")
+    errors = []
+    for po_file in docs_dir.glob("*.po"):
+        errors.extend(convert_docs_po_to_md_file(po_file))
+    if errors:
+        message_manager.add_list_message(f"Docs processing errors: {docs_dir}", errors)
+    logger.info("Language docs processed")
+
+
+def convert_docs_po_to_md_file(po_file):
+    logger.info(f"Converting docs md file {po_file} to md file")
+    source_md_file = po_file.parent.parent / "en" / po_file.with_suffix(".md").name
+    if not source_md_file.is_file():
+        return [
+            f"Failed to find source file for {po_file}. File {source_md_file} not found."
+        ]
+    process = subprocess.Popen(
+        [
+            "po2md",
+            "-q",
+            "-p",
+            po_file,
+            "-s",
+            po_file.with_suffix(".md"),
+            source_md_file,
+        ],
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    process.communicate(None, timeout=10)
+    if process.returncode != 0:
+        raise RuntimeError(f"po2md failed with code {process.returncode}")
+    logger.info("Po file converted to md")
 
 
 def main():
