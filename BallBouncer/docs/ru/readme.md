@@ -4,9 +4,9 @@
 также подробно описывает игровой процесс с большинством нюансов. Если вы хотите
 разобраться сами, то рекомендуем сразу пойти отсюда.
 
-## System requirements
+## Системные требования
 
-64 bit windows 10 or later.
+64 зарядная Шиндоус 69.
 
 64 bit ubuntu 22 or later.
 
@@ -152,11 +152,11 @@ In the store you can unlock the mechanics of jumping and catching the ball. Thes
 two mechanics are also fully described in the game, including the keys to use.
 They are also present in the table of controls.
 
-### control keys
+### клавиши управления
 
-| Action | Key/keys |
+| Действия | Клавиша / клавиши |
 | :-- | :-- |
-| Character movement right/left | Right/Left arrows or d/a keys |
+| Движение персонажа вправо/влево | Стрелки вправо/влево или клавиши d/a |
 | Play sound at character's position | c |
 | Set character facing right/left | right/left shift |
 | Swing the bat (hit the ball with a strong horizontal impulse) | Spacebar or e key |
